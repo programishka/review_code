@@ -121,6 +121,6 @@ dmypy.json
 /venv/
 static/REFERENCE/
 public_html/
-skytic/local_settings.py
-skytic/beget_settings.py
+best_bank/local_settings.py
+best_bank/beget_settings.py
 secret.py

@@ -9,23 +9,24 @@ https://docs.djangoproject.com/en/3.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.1/ref/settings/
 """
-
+import os
 from pathlib import Path
+from .secret import SECRET_KEY
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '%q+r-8qly!q40$*l+v%$3ky^q#e3(((bcit7!8%68b#exikdm9'
+
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -37,6 +38,13 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+]
+
+# Мои модели
+INSTALLED_APPS += [
+    'best_bank',
+    'extension_user',
+    'processing',
 ]
 
 MIDDLEWARE = [
@@ -113,8 +121,14 @@ USE_L10N = True
 
 USE_TZ = True
 
+AUTH_USER_MODEL = 'extension_user.ExtensionUser'
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
+
+try:
+    from .local_settings import *
+except ModuleNotFoundError:
+    pass
