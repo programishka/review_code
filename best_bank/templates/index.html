@@ -1,5 +1,10 @@
 {% extends 'base.html' %}
 
 {% block content %}
-  {{ form.as_p }}
+  <form method="post" action="{% url "index" %}">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="Перевести">
+  </form>
+
 {% endblock %}

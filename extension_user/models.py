@@ -24,12 +24,16 @@ class ExtensionUser(AbstractUser):
     Мы можем спокойно расширять модель пользователя
     """
     # Так как в ИНН может встречаться лидирующие нули будем хранить в виде строки
-    inn = models.CharField(verbose_name="ИНН", max_length=12, db_index=True, validators=[validate_inn])
-    # Денормализация БД для хайлоада (мы всегда можем получить получить баланс из транзакций)
+    inn = models.CharField(verbose_name="ИНН", max_length=12, unique=True, db_index=True, validators=[validate_inn])
+    # Поле обязательно Decimal чтобы не потерять точность значения
     balance = models.DecimalField(verbose_name="Баланс", default=0, max_digits=18, decimal_places=2)
 
     def __str__(self):
         return f'{self.inn}  {self.first_name} {self.last_name} = {self.balance}'
+
+    def save(self, *args, **kwargs):
+        validate_inn(self.inn)
+        super().save(*args, **kwargs)
 
     class Meta:
         verbose_name = "Пользователь"
