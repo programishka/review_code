@@ -73,8 +73,8 @@ AUTH_USER_MODEL = 'extension_user.ExtensionUser'
 
 # TODO:
 
-сделать вариант с DRF
-
++ сделать вариант с DRF
++ сменить тип репозитория на приватный
 
 
 ### Примечание 
