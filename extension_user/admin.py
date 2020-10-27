@@ -15,6 +15,12 @@ class MyUserAdmin(UserAdmin):
         (_('Important dates'), {'fields': ('last_login', 'date_joined')}),
         ("Расширенные", {'fields': ('inn', 'balance')}),
     )
+    add_fieldsets = (
+        (None, {
+            'classes': ('wide',),
+            'fields': ('username', 'password1', 'password2', 'inn'),
+        }),
+    )
 
 
 admin.site.register(ExtensionUser, MyUserAdmin)

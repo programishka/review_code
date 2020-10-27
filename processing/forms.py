@@ -1,3 +1,5 @@
+from decimal import Decimal, ROUND_DOWN
+
 from django import forms
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
@@ -59,16 +61,35 @@ class TransferMoneyForm(forms.Form):
             )
 
     def save(self):
+        """
+        В настройках установили ATOMIC_REQUESTS = True, что нам гарантирует фиксирование транзакций, при успешном
+        выполнении запроса, иначе проиходит откат, поэтому все операции либо применятся, либо откатятся
+        :return:
+        """
         data = self.cleaned_data
 
-        # TODO: Изменяем баланс
+        amount = data['amount']
 
-        for inn in self.list_inn_from_value(data['inn_to']):
+        user_from = data['user_from']
+        # так как прошла валидация то в amount у нас правильная сумма
+        user_from.balance -= amount
+        user_from.save()
+
+        list_inn = self.list_inn_from_value(data['inn_to'])
+        transfer_amount = amount / Decimal(len(list_inn))
+
+        # чтобы не терять копеечки пользователя при делении округляем вниз
+        # пример, 0.98/3  = 0.3266(6) а нам нужно 0.32
+        transfer_amount.quantize(Decimal('0.01'), rounding=ROUND_DOWN)
+
+        for inn in list_inn:
             user_to = get_user_model().objects.get(inn=inn)
+            user_to.balance += transfer_amount
+            user_to.save()
 
             transaction = Transaction()
-            transaction.user_from = data['user_from']
+            transaction.user_from = user_from
             transaction.user_to = user_to
-            transaction.amount = data['amount']
+            transaction.amount = transfer_amount
             transaction.save()
 

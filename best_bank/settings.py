@@ -123,12 +123,12 @@ USE_TZ = True
 
 AUTH_USER_MODEL = 'extension_user.ExtensionUser'
 
+ATOMIC_REQUESTS = True
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
 
-try:
-    from .local_settings import *
-except ModuleNotFoundError:
-    pass
+# Импортируем дополнительные настройки
+from .local_settings import *

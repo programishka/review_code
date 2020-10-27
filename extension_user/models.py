@@ -23,9 +23,14 @@ class ExtensionUser(AbstractUser):
     """
     Мы можем спокойно расширять модель пользователя
     """
-    # Так как в ИНН может встречаться лидирующие нули будем хранить в виде строки
-    inn = models.CharField(verbose_name="ИНН", max_length=12, unique=True, db_index=True, validators=[validate_inn])
-    # Поле обязательно Decimal чтобы не потерять точность значения
+
+    REQUIRED_FIELDS = ['email', 'inn']
+
+    # Так как в ИНН может встречаться лидирующие нули будем хранить в виде строки,
+    inn = models.CharField(
+        verbose_name="ИНН", max_length=12, unique=True, blank=False, null=False,
+        db_index=True, validators=[validate_inn]
+    )
     balance = models.DecimalField(verbose_name="Баланс", default=0, max_digits=18, decimal_places=2)
 
     def __str__(self):

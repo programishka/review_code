@@ -4,8 +4,10 @@ from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from django.db import IntegrityError
 from django.test import TestCase
+from django.apps import apps
 
-from processing.forms import TransferMoneyForm
+
+from extension_user.apps import ExtensionUserConfig
 
 
 class ExtensionUserTestCase(TestCase):
@@ -86,74 +88,13 @@ class ExtensionUserTestCase(TestCase):
         self.assertNotEqual(u.balance, 0.3)
         self.assertEqual(u.balance, Decimal('0.3'))
 
-    def test_form(self):
-        # Пустая форма не валидна
-        f = TransferMoneyForm()
-        self.assertFalse(f.is_valid())
-
-        # Больше чем на балансе
-        u1 = get_user_model().objects.get(username='u1')
-        data = {
-            'user_from': u1,
-            'inn_to': '123456789012',
-            'amount': Decimal('10000'),
-        }
-        f = TransferMoneyForm(data)
-        self.assertFalse(f.is_valid())
-
-        # такого ИНН нет в базе
-        data = {
-            'user_from': u1,
-            'inn_to': '210987654321',
-            'amount': Decimal('1'),
-        }
-        f = TransferMoneyForm(data)
-        self.assertFalse(f.is_valid())
-
-        # короткий ИНН
-        data.update({'inn_to': '210921'})
-        f = TransferMoneyForm(data)
-        self.assertFalse(f.is_valid())
-
-        # недопустимые символы ИНН
-        data.update({'inn_to': '123456e89012'})
-        f = TransferMoneyForm(data)
-        self.assertFalse(f.is_valid())
-
-        #  нельзя переводить себе
-        data.update({'inn_to': '012345678901'})
-        f = TransferMoneyForm(data)
-        self.assertFalse(f.is_valid())
-
-        # отрицательная сумма
-        data.update({'inn_to': '123456789012', 'amount': Decimal('-1')})
-        f = TransferMoneyForm(data)
-        self.assertFalse(f.is_valid())
-
-        # Допустимо несколько ИНН, один недопустимый
-        data = {
-            'user_from': u1,
-            'inn_to': '123456789012, 2345678q0123',
-            'amount': Decimal('1'),
-        }
-        f = TransferMoneyForm(data)
-        self.assertFalse(f.is_valid())
-
-        # Допустимо несколько ИНН
-        data = {
-            'user_from': u1,
-            'inn_to': '123456789012, 234567890123',
-            'amount': Decimal('1'),
-        }
-        f = TransferMoneyForm(data)
-        self.assertTrue(f.is_valid())
-
-        # Сохраним
-        f.save()
-
     def test_presentation(self):
         u1 = get_user_model().objects.get(username='u1')
         self.assertEqual(str(u1), '012345678901  u1 u1 = 100.00')
+
+    def test_apps(self):
+        self.assertEqual(ExtensionUserConfig.name, 'extension_user')
+        self.assertEqual(apps.get_app_config('extension_user').name, 'extension_user')
 
     def test_covered(self):
         pass
