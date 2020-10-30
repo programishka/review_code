@@ -17,18 +17,16 @@ from django.contrib import admin
 from django.urls import path, include
 from rest_framework import routers
 
-from extension_user.views import UserViewSet
+from extension_user.views import UserViewSet, TransferMoneyViewSet
 from processing.views import MoneyTransferView
 
 router = routers.DefaultRouter()
-router.register(r'users', UserViewSet)
+router.register(r'users', UserViewSet, basename='users')
+router.register(r'transfer_money', TransferMoneyViewSet, basename='money_transfer')
 
 urlpatterns = [
-
-    path('', include(router.urls)),
-
     path('', MoneyTransferView.as_view(), name="index"),
     path('admin/', admin.site.urls),
-
+    path('api/v1/', include(router.urls)),
     path('api/v1/', include('rest_framework.urls', namespace='rest_framework')),
 ]

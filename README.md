@@ -94,7 +94,7 @@ AUTH_USER_MODEL = 'extension_user.ExtensionUser'
 + ~~установить DRF~~
 + ~~сделать сериализаторы DRF~~
 + ~~сделать viewsets DRF~~
-+ сделать вариант с DRF
++ ~~сделать вариант с DRF~~
 + ~~только залогиненые пользователи могут работать с DRF~~
 + сменить тип репозитория на приватный
 + перепроверить все ли важные данные за пределами репозитория, изменить пароли и 
@@ -112,11 +112,11 @@ AUTH_USER_MODEL = 'extension_user.ExtensionUser'
 Клонируем этот репозиторий
 
 ```git
-https://github.com/programishka/review_code.git
+git clone https://github.com/programishka/review_code.git
 ```
 
-Создан специальный Makefile чтобы сделать установку максимально простой
-*установим вируальное окружение*
+Создан специальный Makefile чтобы сделать установку максимально простой.
+*Установим вируальное окружение*
 
 ```shell script
 make setupvenv
